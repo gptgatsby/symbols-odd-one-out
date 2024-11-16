@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd One Out Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        #gameContainer {
+            margin-top: 50px;
+        }
+        .emoji-group {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .emoji {
+            font-size: 40px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Odd One Out</h1>
+    <p>Click the symbol that doesn't fit!</p>
+    <div id="gameContainer"></div>
+    <div class="score" id="score">Score: 0</div>
+    <div id="message"></div>
+
+    <script>
+        const gameContainer = document.getElementById('gameContainer');
+        const scoreDisplay = document.getElementById('score');
+        const message = document.getElementById('message');
+        let score = 0;
+
+        const emojiGroups = [
+            { group: ["🤖", "🍎", "⚙️", "🛠️"], odd: "🍎" }, // Fruit odd one out
+            { group: ["🚀", "📡", "🔭", "🐶"], odd: "🐶" }, // Animal odd one out
+            { group: ["💻", "🌻", "📱", "🖥️"], odd: "🌻" }, // Flower odd one out
+            { group: ["🔐", "🪙", "💳", "🏄"], odd: "🏄" }, // Activity odd one out
+            { group: ["🍩", "📈", "🧠", "📡"], odd: "🍩" }, // Food odd one out
+            { group: ["🧠", "🔑", "🎸", "💡"], odd: "🎸" }, // Instrument odd one out
+            { group: ["💰", "🏔️", "📊", "🏦"], odd: "🏔️" }, // Mountain odd one out
+            { group: ["⚙️", "🔋", "🛠️", "🦄"], odd: "🦄" }, // Mythical odd one out
+            { group: ["🐍", "📡", "🖥️", "🌐"], odd: "🐍" }, // Animal odd one out
+            { group: ["📈", "🎃", "💡", "🔍"], odd: "🎃" }  // Pumpkin odd one out
+        ];
+
+        let currentGroupIndex = 0;
+
+        function loadGame() {
+            gameContainer.innerHTML = ""; // Clear previous emojis
+            message.textContent = ""; // Clear previous message
+            const { group, odd } = emojiGroups[currentGroupIndex];
+
+            // Shuffle the emoji group
+            const shuffledGroup = [...group].sort(() => Math.random() - 0.5);
+
+            shuffledGroup.forEach((emoji) => {
+                const emojiElement = document.createElement("span");
+                emojiElement.textContent = emoji;
+                emojiElement.classList.add("emoji");
+                emojiElement.addEventListener("click", () => checkAnswer(emoji, odd));
+                gameContainer.appendChild(emojiElement);
+            });
+        }
+
+        function checkAnswer(selectedEmoji, odd) {
+            if (selectedEmoji === odd) {
+                score++;
+                message.textContent = "Correct! 🎉";
+                message.style.color = "green";
+            } else {
+                message.textContent = "Oops! Try again. 😔";
+                message.style.color = "red";
+            }
+
+            // Update score display
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            // Move to the next group after a short delay
+            setTimeout(() => {
+                currentGroupIndex++;
+                if (currentGroupIndex < emojiGroups.length) {
+                    loadGame();
+                } else {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            gameContainer.innerHTML = `<h2>Game Over!</h2><p>Your final score is ${score} out of ${emojiGroups.length}.</p>`;
+            message.textContent = "Thanks for playing! 🎮";
+        }
+
+        // Start the game
+        loadGame();
+    </script>
+</body>
+</html>
+
